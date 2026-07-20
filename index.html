@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START PACK - 打樣需求指引與評估</title>
+    <style>
+        /* ==========================================================================
+           Global Styles (全域設定：乾淨、對稱、微軟正黑體/Noto Sans)
+           ========================================================================== */
+        :root {
+            --primary-color: #C3D93A; /* 萊姆綠 */
+            --dark-color: #1A1A1A;    /* 深碳黑 */
+            --bg-color: #F6F5F2;      /* 極淺暖灰 */
+            --white: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        section {
+            padding: 80px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-bottom: 2px dashed #ccc;
+        }
+        section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        /* 按鈕共用樣式 (帶有實體陰影的扁平化設計) */
+        .btn {
+            background-color: var(--primary-color);
+            color: var(--dark-color);
+            border: 2px solid var(--dark-color);
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--dark-color);
+            transition: all 0.2s ease;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--dark-color);
+        }
+
+        .btn-outline {
+            background-color: var(--white);
+        }
+
+        /* ==========================================================================
+           Part 1: Carousel & Speech Bubbles (步驟指引輪播)
+           ========================================================================== */
+        .carousel-container {
+            position: relative;
+            background: var(--white);
+            border: 2px solid var(--dark-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 8px 8px 0px var(--dark-color);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            text-align: center;
+            width: 100%;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--dark-color);
+            border-bottom: 4px solid var(--primary-color);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        /* 左右箭頭 */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--white);
+            border: 2px solid var(--dark-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .nav-arrow:hover {
+            background: var(--primary-color);
+        }
+        .prev-arrow { left: -20px; }
+        .next-arrow { right: -20px; }
+
+        /* 按鈕容器與相對定位 (供對話框使用) */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .action-wrapper {
+            position: relative;
+        }
+
+        /* 對話框樣式 */
+        .speech-bubble {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--white);
+            border: 2px solid var(--dark-color);
+            border-radius: 12px;
+            padding: 15px 20px;
+            width: max-content;
+            max-width: 250px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 4px 4px 0px var(--dark-color);
+            z-index: 20;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .speech-bubble.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 對話框尾巴 (小三角形) */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            margin-left: -10px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: var(--dark-color) transparent transparent transparent;
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -7px;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: var(--white) transparent transparent transparent;
+            z-index: 1;
+        }
+
+        /* ==========================================================================
+           Part 2: Wizard Form (互動問答表單)
+           ========================================================================== */
+        .wizard-container {
+            background: var(--white);
+            border: 2px solid var(--dark-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 8px 8px 0px var(--dark-color);
+        }
+        .wizard-step {
+            display: none;
+            text-align: center;
+            animation: slideInRight 0.4s ease-in-out;
+        }
+        .wizard-step.active {
+            display: block;
+        }
+        .wizard-question {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+        }
+        .input-text {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px;
+            border: 2px solid var(--dark-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* ==========================================================================
+           Part 3: Pricing Calculator (疊加式計費估算器)
+           ========================================================================== */
+        .calc-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .calc-container { grid-template-columns: 1fr; }
+        }
+        
+        .calc-box {
+            background: var(--white);
+            border: 2px solid var(--dark-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 4px 4px 0px var(--dark-color);
+        }
+        
+        .calc-group {
+            margin-bottom: 20px;
+        }
+        .calc-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        .calc-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--dark-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--bg-color);
+            cursor: pointer;
+        }
+
+        .total-box {
+            grid-column: 1 / -1;
+            background: var(--primary-color);
+            border: 2px solid var(--dark-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 6px 6px 0px var(--dark-color);
+            margin-top: 10px;
+        }
+        .total-price {
+            font-size: 3rem;
+            font-weight: 900;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ==========================================================================
+           Modal Styles (版型庫彈出視窗)
+           ========================================================================== */
+        .modal {
+            display: none; /* 預設隱藏 */
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: var(--bg-color);
+            border: 4px solid var(--dark-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            position: relative;
+            padding: 20px;
+            box-shadow: 8px 8px 0px var(--dark-color);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background-color: var(--white);
+            color: var(--dark-color);
+            border: 3px solid var(--dark-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 3px 3px 0px var(--dark-color);
+        }
+
+        .close-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: var(--white);
+            border: 2px solid var(--dark-color);
+            aspect-ratio: 4/3; /* 確保適應圖片比例 */
+        }
+
+        .slider-img {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .slider-img.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--white);
+            border: 2px solid var(--dark-color);
+            color: var(--dark-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-arrow:hover {
+            background-color: var(--primary-color);
+        }
+
+        .slider-arrow.prev { left: 10px; }
+        .slider-arrow.next { right: 10px; }
+
+        .slider-indicator {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         Part 1: 以步驟進行指引 (互動式輪播)
+         ========================================================================== -->
+    <section id="part1">
+        <h2 class="section-title">打樣流程指引</h2>
+        <div class="carousel-container">
+            <button class="nav-arrow prev-arrow" onclick="changeSlide(-1)">&#8249;</button>
+            <button class="nav-arrow next-arrow" onclick="changeSlide(1)">&#8250;</button>
+
+            <!-- Slide 1 -->
+            <div class="slide active">
+                <h2>STEP.1 開始諮詢</h2>
+                <div class="btn-group">
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">哪裡找我們？</button>
+                        <div class="speech-bubble">我們在花蓮市和平路405巷13號！<br>電話是03-8233520</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn" onclick="toggleBubble(this)">加入line線上諮詢</button>
+                        <div class="speech-bubble">加入我們！我們的ID是【@507oimub】<br><a href="https://lin.ee/rDL0LKF"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0" style="margin-top:5px;"></a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide">
+                <h2>STEP.2 結構設計</h2>
+                <div class="btn-group">
+                    <div class="action-wrapper">
+                        <!-- 開啟 Modal 的按鈕 -->
+                        <button class="btn btn-outline" onclick="toggleBubble(this); openModal();">使用現有版型庫</button>
+                        <div class="speech-bubble">點擊查看 8 款經典版型</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">客製化結構開發</button>
+                        <div class="speech-bubble">請先找一些你喜歡的樣式案例，再與我們的工作人員討論。</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn" onclick="toggleBubble(this)">自備圖檔(已設計)</button>
+                        <div class="speech-bubble">請提供 illustrator 或 svg 檔案為主。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide">
+                <h2>STEP.3 數位打樣材料</h2>
+                <div class="btn-group">
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">需要選材料</button>
+                        <div class="speech-bubble">可以到官網看看我們的精選材料有哪些，或是到現場摸摸材質！</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">我自備材料</button>
+                        <div class="speech-bubble">請先告知我們你的材料是什麼，還有它的厚度。必要時需要拍照片喔！</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn" onclick="toggleBubble(this)">數位輸出打樣+選材料</button>
+                        <div class="speech-bubble">可以到官網看看我們的精選材料有哪些可以印刷！</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide">
+                <h2>STEP.4 實體核稿</h2>
+                <div class="btn-group">
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">測試</button>
+                        <div class="speech-bubble">裁切好的盒子，可以折折看是否OK喔！</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">修正</button>
+                        <div class="speech-bubble">看看是否需要修正及調整</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn" onclick="toggleBubble(this)">交付完成</button>
+                        <div class="speech-bubble">如果一次打樣OK，那非常恭喜你完成了！</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="slide">
+                <h2>STEP.5 彈性量產</h2>
+                <div class="btn-group">
+                    <div class="action-wrapper">
+                        <button class="btn btn-outline" onclick="toggleBubble(this)">微型量產 (1-20pcs)</button>
+                        <div class="speech-bubble">可以再討論看看是否有少量量產的需求！</div>
+                    </div>
+                    <div class="action-wrapper">
+                        <button class="btn" onclick="toggleBubble(this)">轉介批量大貨工廠</button>
+                        <div class="speech-bubble">如果需要批量製作，我們可以幫你發包！</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         Part 2: 現有產品指引評估 (互動問答表單 Wizard)
+         ========================================================================== -->
+    <section id="part2">
+        <h2 class="section-title">現有產品指引評估</h2>
+        <div class="wizard-container">
+            
+            <!-- Step 1 -->
+            <div class="wizard-step active" id="wiz-step-1">
+                <div class="wizard-question">1. 請問您的產品類型是？</div>
+                <div class="btn-group">
+                    <button class="btn btn-outline" onclick="nextWizard(2)">化妝品/瓶罐</button>
+                    <button class="btn btn-outline" onclick="nextWizard(2)">農產品</button>
+                    <button class="btn btn-outline" onclick="nextWizard(2)">文創商品</button>
+                    <button class="btn btn-outline" onclick="nextWizard(2)">其它</button>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="wizard-step" id="wiz-step-2">
+                <div class="wizard-question">2. 請問預計的產品長寬高尺寸是？ (單位:cm)</div>
+                <input type="text" class="input-text" placeholder="例如: 10 x 5 x 15" id="wiz-dim">
+                <br>
+                <button class="btn" onclick="nextWizard(3)">下一步</button>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="wizard-step" id="wiz-step-3">
+                <div class="wizard-question">3. 請問目前檔案準備狀況？</div>
+                <div class="btn-group">
+                    <button class="btn btn-outline" onclick="nextWizard(4)">自備完整檔</button>
+                    <button class="btn btn-outline" onclick="nextWizard(4)">有圖無刀模</button>
+                    <button class="btn btn-outline" onclick="nextWizard(4)">無圖無刀模</button>
+                </div>
+            </div>
+
+            <!-- Step 4 (Final) -->
+            <div class="wizard-step" id="wiz-step-4">
+                <div class="wizard-question" style="color: var(--primary-color); font-weight: 900; -webkit-text-stroke: 1px var(--dark-color);">評估完成！</div>
+                <p style="font-size: 1.1rem; margin-bottom: 20px;">請參考下方費用估算進行精確報價！</p>
+                <button class="btn" onclick="document.getElementById('part3').scrollIntoView({behavior: 'smooth'})">前往計算器</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         Part 3: 費用指引評估 (疊加式計費估算器)
+         ========================================================================== -->
+    <section id="part3">
+        <h2 class="section-title">線上費用估算器</h2>
+        <div class="calc-container">
+            
+            <div class="calc-box">
+                <div class="calc-group">
+                    <label>A. 基本費用 (開機處理費)</label>
+                    <select id="calcA" class="calc-select">
+                        <option value="100">1張 ($100)</option>
+                        <option value="200">2-10張 ($200)</option>
+                        <option value="350">11-20張 ($350)</option>
+                    </select>
+                </div>
+                
+                <div class="calc-group">
+                    <label>B. 盒型結構(線稿)費</label>
+                    <select id="calcB" class="calc-select">
+                        <option value="0">自備線稿 ($0)</option>
+                        <option value="300">使用公版盒型 ($300)</option>
+                        <option value="1800">全新客製盒型 ($1,800)</option>
+                    </select>
+                </div>
+
+                <div class="calc-group">
+                    <label>C. 視覺設計費</label>
+                    <select id="calcC" class="calc-select">
+                        <option value="100">自備印刷圖檔 ($100)</option>
+                        <option value="2000">圖檔需重製 ($2,000)</option>
+                        <option value="3000">委託視覺設計 ($3,000)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="calc-box">
+                <div class="calc-group">
+                    <label>D. 印刷費</label>
+                    <select id="calcD" class="calc-select">
+                        <option value="0">自備印刷 ($0)</option>
+                        <option value="90">A4 印刷 ($90)</option>
+                        <option value="150">A3 印刷 ($150)</option>
+                    </select>
+                </div>
+
+                <div class="calc-group">
+                    <label>E. 材料費 (單張)</label>
+                    <select id="calcE" class="calc-select">
+                        <option value="20">白銅卡 350p ($20)</option>
+                        <option value="50">E浪紙板 ($50)</option>
+                        <option value="75">高級銀箔卡 ($75)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="total-box">
+                <div>預估總價 (NT$)</div>
+                <div class="total-price" id="totalPrice">$220</div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         Modal (全螢幕彈出視窗 - 8 款版型庫)
+         ========================================================================== -->
+    <div id="templateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="slider-container">
+                <!-- 這裡已經幫您換上正確的圖片檔名 -->
+                <img class="slider-img active" src="盒型說明-1_2.jpg" alt="款式A 基礎方盒">
+                <img class="slider-img" src="盒型說明-2_2.jpg" alt="款式B 飛機盒">
+                <img class="slider-img" src="盒型說明-3_2.jpg" alt="款式C 禮物盒">
+                <img class="slider-img" src="盒型說明-4_2.jpg" alt="款式D 天地蓋盒">
+                <img class="slider-img" src="盒型說明-5_2.jpg" alt="款式E 抽屜盒">
+                <img class="slider-img" src="盒型說明-6_2.jpg" alt="款式F 三角造型盒">
+                <img class="slider-img" src="盒型說明-7_2.jpg" alt="款式G 提盒">
+                <img class="slider-img" src="盒型說明-8_2.jpg" alt="款式G 精緻硬盒">
+                
+                <button class="slider-arrow prev" onclick="changeModalSlide(-1)">&#10094;</button>
+                <button class="slider-arrow next" onclick="changeModalSlide(1)">&#10095;</button>
+            </div>
+            <div class="slider-indicator" id="sliderIndicator">1 / 8</div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         JavaScript 邏輯
+         ========================================================================== -->
+    <script>
+        // ---------------- Part 1: Carousel 邏輯 ----------------
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function changeSlide(direction) {
+            // 關閉所有開啟的對話框
+            document.querySelectorAll('.speech-bubble.show').forEach(el => el.classList.remove('show'));
+            
+            slides[currentSlide].classList.remove('active');
+            currentSlide += direction;
+            
+            if (currentSlide < 0) currentSlide = slides.length - 1;
+            if (currentSlide >= slides.length) currentSlide = 0;
+            
+            slides[currentSlide].classList.add('active');
+        }
+
+        // 對話框開關邏輯 (Tooltip Toggle)
+        function toggleBubble(btnElement) {
+            // 先關閉其他按鈕的對話框
+            document.querySelectorAll('.speech-bubble.show').forEach(bubble => {
+                if(bubble !== btnElement.nextElementSibling) {
+                    bubble.classList.remove('show');
+                }
+            });
+            // 切換當前按鈕的對話框
+            const bubble = btnElement.nextElementSibling;
+            if (bubble && bubble.classList.contains('speech-bubble')) {
+                bubble.classList.toggle('show');
+            }
+        }
+
+        // 點擊空白處自動關閉對話框
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.action-wrapper') && !e.target.closest('.nav-arrow')) {
+                document.querySelectorAll('.speech-bubble.show').forEach(el => el.classList.remove('show'));
+            }
+        });
+
+        // ---------------- Part 2: Wizard 邏輯 ----------------
+        function nextWizard(stepNum) {
+            document.querySelectorAll('.wizard-step').forEach(step => step.classList.remove('active'));
+            document.getElementById('wiz-step-' + stepNum).classList.add('active');
+        }
+
+        // ---------------- Part 3: 計算器邏輯 ----------------
+        const selects = document.querySelectorAll('.calc-select');
+        const totalPriceEl = document.getElementById('totalPrice');
+
+        function calculateTotal() {
+            let total = 0;
+            selects.forEach(select => {
+                total += parseInt(select.value);
+            });
+            totalPriceEl.innerText = '$' + total.toLocaleString();
+        }
+
+        // 綁定事件監聽器
+        selects.forEach(select => {
+            select.addEventListener('change', calculateTotal);
+        });
+        
+        // 初始計算一次
+        calculateTotal();
+
+        // ---------------- Modal (版型庫) 邏輯 ----------------
+        const modal = document.getElementById('templateModal');
+        let currentModalSlide = 0;
+        const modalSlides = document.querySelectorAll('.slider-img');
+        const sliderIndicator = document.getElementById('sliderIndicator');
+
+        function openModal() {
+            modal.classList.add('show');
+            showModalSlide(currentModalSlide);
+            // 阻止背景滾動
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function changeModalSlide(direction) {
+            currentModalSlide += direction;
+            if (currentModalSlide < 0) currentModalSlide = modalSlides.length - 1;
+            if (currentModalSlide >= modalSlides.length) currentModalSlide = 0;
+            showModalSlide(currentModalSlide);
+        }
+
+        function showModalSlide(index) {
+            modalSlides.forEach(slide => slide.classList.remove('active'));
+            modalSlides[index].classList.add('active');
+            sliderIndicator.innerText = `${index + 1} / ${modalSlides.length}`;
+        }
+
+        // 點擊 Modal 半透明背景自動關閉
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
