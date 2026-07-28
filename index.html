@@ -460,13 +460,15 @@
                 </div>
             </div>
 
-            <!-- Slide 3 -->
+            <!-- Slide 3 (已更新加入官網連結與樣式) -->
             <div class="slide">
                 <h2>STEP.3 數位打樣材料</h2>
                 <div class="btn-group">
                     <div class="action-wrapper">
                         <button class="btn btn-outline" onclick="toggleBubble(this)">需要選材料</button>
-                        <div class="speech-bubble">可以到官網看看我們的精選材料有哪些，或是到現場摸摸材質！</div>
+                        <div class="speech-bubble">
+                            可以到 <a href="https://www.eaststartpack.com/" target="_blank" rel="noopener noreferrer" style="color: var(--dark-color); text-decoration: underline; font-weight: 900; background-color: var(--primary-color); padding: 0 4px; border-radius: 4px;">我們的官網</a> 看看精選材料有哪些，或是到現場摸摸材質！
+                        </div>
                     </div>
                     <div class="action-wrapper">
                         <button class="btn btn-outline" onclick="toggleBubble(this)">我自備材料</button>
@@ -627,21 +629,20 @@
     </section>
 
     <!-- ==========================================================================
-         Modal (全螢幕彈出視窗 - 8 款版型庫)
+         Modal (全螢幕彈出視窗 - 8 款版型庫，已更新加入 ./images/ 與 loading="lazy")
          ========================================================================== -->
     <div id="templateModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div class="slider-container">
-                <!-- 這裡已經幫您換上正確的圖片檔名 -->
-                <img class="slider-img active" src="盒型說明-1_2.jpg" alt="款式A 基礎方盒">
-                <img class="slider-img" src="盒型說明-2_2.jpg" alt="款式B 飛機盒">
-                <img class="slider-img" src="盒型說明-3_2.jpg" alt="款式C 禮物盒">
-                <img class="slider-img" src="盒型說明-4_2.jpg" alt="款式D 天地蓋盒">
-                <img class="slider-img" src="盒型說明-5_2.jpg" alt="款式E 抽屜盒">
-                <img class="slider-img" src="盒型說明-6_2.jpg" alt="款式F 三角造型盒">
-                <img class="slider-img" src="盒型說明-7_2.jpg" alt="款式G 提盒">
-                <img class="slider-img" src="盒型說明-8_2.jpg" alt="款式G 精緻硬盒">
+                <img class="slider-img active" src="./images/盒型說明-1_2.jpg" alt="款式A 基礎方盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-2_2.jpg" alt="款式B 飛機盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-3_2.jpg" alt="款式C 禮物盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-4_2.jpg" alt="款式D 天地蓋盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-5_2.jpg" alt="款式E 抽屜盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-6_2.jpg" alt="款式F 三角造型盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-7_2.jpg" alt="款式G 提盒" loading="lazy">
+                <img class="slider-img" src="./images/盒型說明-8_2.jpg" alt="款式G 精緻硬盒" loading="lazy">
                 
                 <button class="slider-arrow prev" onclick="changeModalSlide(-1)">&#10094;</button>
                 <button class="slider-arrow next" onclick="changeModalSlide(1)">&#10095;</button>
