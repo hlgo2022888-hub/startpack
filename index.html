@@ -6,7 +6,7 @@
     <title>START PACK - 打樣需求指引與評估</title>
     <style>
         /* ==========================================================================
-           Global Styles (全域設定：乾淨、對稱、微軟正黑體/Noto Sans)
+           Global Styles 
            ========================================================================== */
         :root {
             --primary-color: #C3D93A; /* 萊姆綠 */
@@ -51,7 +51,7 @@
             text-transform: uppercase;
         }
 
-        /* 按鈕共用樣式 (帶有實體陰影的扁平化設計) */
+        /* 按鈕共用樣式 */
         .btn {
             background-color: var(--primary-color);
             color: var(--dark-color);
@@ -77,7 +77,7 @@
         }
 
         /* ==========================================================================
-           Part 1: Carousel & Speech Bubbles (步驟指引輪播)
+           Part 1: Carousel & Speech Bubbles 
            ========================================================================== */
         .carousel-container {
             position: relative;
@@ -113,7 +113,6 @@
             padding-bottom: 5px;
         }
 
-        /* 左右箭頭 */
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -138,7 +137,6 @@
         .prev-arrow { left: -20px; }
         .next-arrow { right: -20px; }
 
-        /* 按鈕容器與相對定位 (供對話框使用) */
         .btn-group {
             display: flex;
             flex-wrap: wrap;
@@ -150,7 +148,6 @@
             position: relative;
         }
 
-        /* 對話框樣式 */
         .speech-bubble {
             visibility: hidden;
             opacity: 0;
@@ -177,7 +174,6 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* 對話框尾巴 (小三角形) */
         .speech-bubble::after {
             content: '';
             position: absolute;
@@ -201,7 +197,7 @@
         }
 
         /* ==========================================================================
-           Part 2: Wizard Form (互動問答表單)
+           Part 2: Wizard Form
            ========================================================================== */
         .wizard-container {
             background: var(--white);
@@ -233,7 +229,7 @@
         }
 
         /* ==========================================================================
-           Part 3: Pricing Calculator (疊加式計費估算器)
+           Part 3: Pricing Calculator 
            ========================================================================== */
         .calc-container {
             display: grid;
@@ -271,6 +267,16 @@
             cursor: pointer;
         }
 
+        /* 警告小字樣式 */
+        .calc-warning {
+            display: none;
+            color: #D32F2F;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
         .total-box {
             grid-column: 1 / -1;
             background: var(--primary-color);
@@ -282,7 +288,7 @@
             margin-top: 10px;
         }
         .total-price {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 900;
         }
 
@@ -297,10 +303,10 @@
         }
 
         /* ==========================================================================
-           Modal Styles (版型庫彈出視窗)
+           Modal Styles 
            ========================================================================== */
         .modal {
-            display: none; /* 預設隱藏 */
+            display: none; 
             position: fixed;
             z-index: 9999;
             left: 0;
@@ -364,7 +370,7 @@
             border-radius: 8px;
             background-color: var(--white);
             border: 2px solid var(--dark-color);
-            aspect-ratio: 4/3; /* 確保適應圖片比例 */
+            aspect-ratio: 4/3; 
         }
 
         .slider-img {
@@ -416,9 +422,6 @@
 </head>
 <body>
 
-    <!-- ==========================================================================
-         Part 1: 以步驟進行指引 (互動式輪播)
-         ========================================================================== -->
     <section id="part1">
         <h2 class="section-title">打樣流程指引</h2>
         <div class="carousel-container">
@@ -445,7 +448,6 @@
                 <h2>STEP.2 結構設計</h2>
                 <div class="btn-group">
                     <div class="action-wrapper">
-                        <!-- 開啟 Modal 的按鈕 -->
                         <button class="btn btn-outline" onclick="toggleBubble(this); openModal();">使用現有版型庫</button>
                         <div class="speech-bubble">點擊查看 8 款經典版型</div>
                     </div>
@@ -460,7 +462,7 @@
                 </div>
             </div>
 
-            <!-- Slide 3 (已更新加入官網連結與樣式) -->
+            <!-- Slide 3 -->
             <div class="slide">
                 <h2>STEP.3 數位打樣材料</h2>
                 <div class="btn-group">
@@ -514,18 +516,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- ==========================================================================
-         Part 2: 現有產品指引評估 (互動問答表單 Wizard)
-         ========================================================================== -->
     <section id="part2">
         <h2 class="section-title">現有產品指引評估</h2>
         <div class="wizard-container">
-            
-            <!-- Step 1 -->
             <div class="wizard-step active" id="wiz-step-1">
                 <div class="wizard-question">1. 請問您的產品類型是？</div>
                 <div class="btn-group">
@@ -535,16 +531,12 @@
                     <button class="btn btn-outline" onclick="nextWizard(2)">其它</button>
                 </div>
             </div>
-
-            <!-- Step 2 -->
             <div class="wizard-step" id="wiz-step-2">
                 <div class="wizard-question">2. 請問預計的產品長寬高尺寸是？ (單位:cm)</div>
                 <input type="text" class="input-text" placeholder="例如: 10 x 5 x 15" id="wiz-dim">
                 <br>
                 <button class="btn" onclick="nextWizard(3)">下一步</button>
             </div>
-
-            <!-- Step 3 -->
             <div class="wizard-step" id="wiz-step-3">
                 <div class="wizard-question">3. 請問目前檔案準備狀況？</div>
                 <div class="btn-group">
@@ -553,19 +545,16 @@
                     <button class="btn btn-outline" onclick="nextWizard(4)">無圖無刀模</button>
                 </div>
             </div>
-
-            <!-- Step 4 (Final) -->
             <div class="wizard-step" id="wiz-step-4">
                 <div class="wizard-question" style="color: var(--primary-color); font-weight: 900; -webkit-text-stroke: 1px var(--dark-color);">評估完成！</div>
                 <p style="font-size: 1.1rem; margin-bottom: 20px;">請參考下方費用估算進行精確報價！</p>
                 <button class="btn" onclick="document.getElementById('part3').scrollIntoView({behavior: 'smooth'})">前往計算器</button>
             </div>
-
         </div>
     </section>
 
     <!-- ==========================================================================
-         Part 3: 費用指引評估 (疊加式計費估算器)
+         Part 3: 費用指引評估 (更新版邏輯與選項)
          ========================================================================== -->
     <section id="part3">
         <h2 class="section-title">線上費用估算器</h2>
@@ -578,15 +567,20 @@
                         <option value="100">1張 ($100)</option>
                         <option value="200">2-10張 ($200)</option>
                         <option value="350">11-20張 ($350)</option>
+                        <option value="100" data-warning="true">21張以上 (專案另計 +$100)</option>
                     </select>
+                    <!-- 隱藏的提醒文字 -->
+                    <div id="warningA" class="calc-warning">
+                        ※ 21張以上屬於小批量產，上方估價僅含基本開機費100元，完整開機費將由專員為您另行報價。
+                    </div>
                 </div>
                 
                 <div class="calc-group">
                     <label>B. 盒型結構(線稿)費</label>
                     <select id="calcB" class="calc-select">
                         <option value="0">自備線稿 ($0)</option>
-                        <option value="300">使用公版盒型 ($300)</option>
-                        <option value="1800">全新客製盒型 ($1,800)</option>
+                        <option value="300">使用公版盒型 ($300起)</option>
+                        <option value="1800">全新客製盒型 ($1,800起)</option>
                     </select>
                 </div>
 
@@ -594,42 +588,48 @@
                     <label>C. 視覺設計費</label>
                     <select id="calcC" class="calc-select">
                         <option value="100">自備印刷圖檔 ($100)</option>
-                        <option value="2000">圖檔需重製 ($2,000)</option>
-                        <option value="3000">委託視覺設計 ($3,000)</option>
+                        <option value="2000">圖檔需重製 ($2,000起)</option>
+                        <option value="3000">委託視覺設計 ($3,000起)</option>
                     </select>
                 </div>
             </div>
 
             <div class="calc-box">
                 <div class="calc-group">
-                    <label>D. 印刷費</label>
+                    <label>D. 印刷處理</label>
                     <select id="calcD" class="calc-select">
                         <option value="0">自備印刷 ($0)</option>
-                        <option value="90">A4 印刷 ($90)</option>
-                        <option value="150">A3 印刷 ($150)</option>
+                        <option value="90">A4 基本印刷 ($90)</option>
+                        <option value="100">A4 印刷+霧/亮膜 ($100)</option>
+                        <option value="150">A3 基本印刷 ($150)</option>
+                        <option value="165">A3 印刷+霧/亮膜 ($165)</option>
+                        <option value="70">大於A3才數計費 ($70估算)</option>
                     </select>
                 </div>
 
                 <div class="calc-group">
-                    <label>E. 材料費 (單張)</label>
+                    <label>E. 材料費 (單張區間)</label>
+                    <!-- value 設定為 "最低金額,最高金額" 供 JS 運算 -->
                     <select id="calcE" class="calc-select">
-                        <option value="20">白銅卡 350p ($20)</option>
-                        <option value="50">E浪紙板 ($50)</option>
-                        <option value="75">高級銀箔卡 ($75)</option>
+                        <option value="10,40">卡紙系列 ($10 ~ $40)</option>
+                        <option value="20,40">色卡與美術紙 ($20 ~ $40)</option>
+                        <option value="10,75">高級珠光與光澤紙 ($10 ~ $75)</option>
+                        <option value="20,50">厚板材料 ($20 ~ $50)</option>
+                        <option value="10,90">特殊與襯墊材質 ($10 ~ $90)</option>
                     </select>
                 </div>
             </div>
 
             <div class="total-box">
-                <div>預估總價 (NT$)</div>
-                <div class="total-price" id="totalPrice">$220</div>
+                <div>預估總價區間 (NT$)</div>
+                <div class="total-price" id="totalPrice">$220 ~ $250</div>
             </div>
 
         </div>
     </section>
 
     <!-- ==========================================================================
-         Modal (全螢幕彈出視窗 - 8 款版型庫，已更新加入 ./images/ 與 loading="lazy")
+         Modal 
          ========================================================================== -->
     <div id="templateModal" class="modal">
         <div class="modal-content">
@@ -655,72 +655,89 @@
          JavaScript 邏輯
          ========================================================================== -->
     <script>
-        // ---------------- Part 1: Carousel 邏輯 ----------------
+        // ---------------- Part 1: Carousel ----------------
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         
         function changeSlide(direction) {
-            // 關閉所有開啟的對話框
             document.querySelectorAll('.speech-bubble.show').forEach(el => el.classList.remove('show'));
-            
             slides[currentSlide].classList.remove('active');
             currentSlide += direction;
-            
             if (currentSlide < 0) currentSlide = slides.length - 1;
             if (currentSlide >= slides.length) currentSlide = 0;
-            
             slides[currentSlide].classList.add('active');
         }
 
-        // 對話框開關邏輯 (Tooltip Toggle)
         function toggleBubble(btnElement) {
-            // 先關閉其他按鈕的對話框
             document.querySelectorAll('.speech-bubble.show').forEach(bubble => {
                 if(bubble !== btnElement.nextElementSibling) {
                     bubble.classList.remove('show');
                 }
             });
-            // 切換當前按鈕的對話框
             const bubble = btnElement.nextElementSibling;
             if (bubble && bubble.classList.contains('speech-bubble')) {
                 bubble.classList.toggle('show');
             }
         }
 
-        // 點擊空白處自動關閉對話框
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.action-wrapper') && !e.target.closest('.nav-arrow')) {
                 document.querySelectorAll('.speech-bubble.show').forEach(el => el.classList.remove('show'));
             }
         });
 
-        // ---------------- Part 2: Wizard 邏輯 ----------------
+        // ---------------- Part 2: Wizard ----------------
         function nextWizard(stepNum) {
             document.querySelectorAll('.wizard-step').forEach(step => step.classList.remove('active'));
             document.getElementById('wiz-step-' + stepNum).classList.add('active');
         }
 
-        // ---------------- Part 3: 計算器邏輯 ----------------
+        // ---------------- Part 3: 計算器邏輯 (更新版) ----------------
         const selects = document.querySelectorAll('.calc-select');
         const totalPriceEl = document.getElementById('totalPrice');
+        const selectA = document.getElementById('calcA');
+        const warningA = document.getElementById('warningA');
 
         function calculateTotal() {
-            let total = 0;
-            selects.forEach(select => {
-                total += parseInt(select.value);
-            });
-            totalPriceEl.innerText = '$' + total.toLocaleString();
+            let baseTotal = 0;
+            let minTotal = 0;
+            let maxTotal = 0;
+
+            // 處理 A, B, C, D 的累加
+            const valA = parseInt(document.getElementById('calcA').value) || 0;
+            const valB = parseInt(document.getElementById('calcB').value) || 0;
+            const valC = parseInt(document.getElementById('calcC').value) || 0;
+            const valD = parseInt(document.getElementById('calcD').value) || 0;
+            
+            baseTotal = valA + valB + valC + valD;
+
+            // 檢查選項 A 是否觸發警告文字
+            const selectedOptionA = selectA.options[selectA.selectedIndex];
+            if (selectedOptionA.getAttribute('data-warning') === 'true') {
+                warningA.style.display = 'block';
+            } else {
+                warningA.style.display = 'none';
+            }
+
+            // 處理 E 材料費區間
+            const selectE = document.getElementById('calcE');
+            if (selectE.value) {
+                const range = selectE.value.split(',');
+                minTotal = baseTotal + parseInt(range[0]);
+                maxTotal = baseTotal + parseInt(range[1]);
+            }
+
+            // 更新畫面金額
+            totalPriceEl.innerText = '$' + minTotal.toLocaleString() + ' ~ $' + maxTotal.toLocaleString();
         }
 
-        // 綁定事件監聽器
         selects.forEach(select => {
             select.addEventListener('change', calculateTotal);
         });
         
-        // 初始計算一次
         calculateTotal();
 
-        // ---------------- Modal (版型庫) 邏輯 ----------------
+        // ---------------- Modal ----------------
         const modal = document.getElementById('templateModal');
         let currentModalSlide = 0;
         const modalSlides = document.querySelectorAll('.slider-img');
@@ -729,7 +746,6 @@
         function openModal() {
             modal.classList.add('show');
             showModalSlide(currentModalSlide);
-            // 阻止背景滾動
             document.body.style.overflow = 'hidden';
         }
 
@@ -751,7 +767,6 @@
             sliderIndicator.innerText = `${index + 1} / ${modalSlides.length}`;
         }
 
-        // 點擊 Modal 半透明背景自動關閉
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 closeModal();
