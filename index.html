@@ -311,17 +311,18 @@
             z-index: 9999;
             left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: rgba(0, 0, 0, 0.8);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease-in-out;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
         .modal.show {
             display: flex;
-            align-items: center;
-            justify-content: center;
             opacity: 1;
         }
 
@@ -329,31 +330,34 @@
             background-color: var(--bg-color);
             border: 4px solid var(--dark-color);
             border-radius: 16px;
-            width: 90%;
-            max-width: 900px;
+            width: 100%;
+            max-width: 850px;
+            max-height: 90vh;
             position: relative;
-            padding: 20px;
+            padding: 24px;
             box-shadow: 8px 8px 0px var(--dark-color);
+            overflow-y: auto;
         }
 
         .close-btn {
             position: absolute;
-            top: -15px;
-            right: -15px;
+            top: 10px;
+            right: 10px;
             background-color: var(--white);
             color: var(--dark-color);
-            border: 3px solid var(--dark-color);
+            border: 2px solid var(--dark-color);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10000;
-            box-shadow: 3px 3px 0px var(--dark-color);
+            z-index: 10;
+            box-shadow: 2px 2px 0px var(--dark-color);
+            line-height: 1;
         }
 
         .close-btn:hover {
@@ -370,7 +374,9 @@
             border-radius: 8px;
             background-color: var(--white);
             border: 2px solid var(--dark-color);
-            aspect-ratio: 4/3; 
+            aspect-ratio: 4/3;
+            min-height: 280px;
+            margin-top: 10px;
         }
 
         .slider-img {
@@ -382,7 +388,7 @@
 
         .slider-img.active {
             display: block;
-            animation: fadeIn 0.4s;
+            animation: fadeIn 0.3s;
         }
 
         .slider-arrow {
@@ -402,6 +408,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 5;
         }
 
         .slider-arrow:hover {
@@ -448,8 +455,9 @@
                 <h2>STEP.2 結構設計</h2>
                 <div class="btn-group">
                     <div class="action-wrapper">
-                        <button class="btn btn-outline" onclick="toggleBubble(this); openModal();">使用現有版型庫</button>
-                        <div class="speech-bubble">點擊查看 8 款經典版型</div>
+                        <!-- 直接觸發 openModal()，同時保留氣泡點擊備援 -->
+                        <button class="btn btn-outline" onclick="openModal()">使用現有版型庫</button>
+                        <div class="speech-bubble" style="cursor: pointer;" onclick="openModal()">點擊查看 8 款經典版型</div>
                     </div>
                     <div class="action-wrapper">
                         <button class="btn btn-outline" onclick="toggleBubble(this)">客製化結構開發</button>
@@ -554,7 +562,7 @@
     </section>
 
     <!-- ==========================================================================
-         Part 3: 費用指引評估 (更新版邏輯與選項)
+         Part 3: 費用指引評估
          ========================================================================== -->
     <section id="part3">
         <h2 class="section-title">線上費用估算器</h2>
@@ -609,7 +617,6 @@
 
                 <div class="calc-group">
                     <label>E. 材料費 (單張區間)</label>
-                    <!-- value 設定為 "最低金額,最高金額" 供 JS 運算 -->
                     <select id="calcE" class="calc-select">
                         <option value="10,40">卡紙系列 ($10 ~ $40)</option>
                         <option value="20,40">色卡與美術紙 ($20 ~ $40)</option>
@@ -692,7 +699,7 @@
             document.getElementById('wiz-step-' + stepNum).classList.add('active');
         }
 
-        // ---------------- Part 3: 計算器邏輯 (更新版) ----------------
+        // ---------------- Part 3: 計算器邏輯 ----------------
         const selects = document.querySelectorAll('.calc-select');
         const totalPriceEl = document.getElementById('totalPrice');
         const selectA = document.getElementById('calcA');
@@ -703,7 +710,6 @@
             let minTotal = 0;
             let maxTotal = 0;
 
-            // 處理 A, B, C, D 的累加
             const valA = parseInt(document.getElementById('calcA').value) || 0;
             const valB = parseInt(document.getElementById('calcB').value) || 0;
             const valC = parseInt(document.getElementById('calcC').value) || 0;
@@ -711,7 +717,6 @@
             
             baseTotal = valA + valB + valC + valD;
 
-            // 檢查選項 A 是否觸發警告文字
             const selectedOptionA = selectA.options[selectA.selectedIndex];
             if (selectedOptionA.getAttribute('data-warning') === 'true') {
                 warningA.style.display = 'block';
@@ -719,7 +724,6 @@
                 warningA.style.display = 'none';
             }
 
-            // 處理 E 材料費區間
             const selectE = document.getElementById('calcE');
             if (selectE.value) {
                 const range = selectE.value.split(',');
@@ -727,7 +731,6 @@
                 maxTotal = baseTotal + parseInt(range[1]);
             }
 
-            // 更新畫面金額
             totalPriceEl.innerText = '$' + minTotal.toLocaleString() + ' ~ $' + maxTotal.toLocaleString();
         }
 
@@ -744,6 +747,8 @@
         const sliderIndicator = document.getElementById('sliderIndicator');
 
         function openModal() {
+            // 隱藏可能打開的對話氣泡
+            document.querySelectorAll('.speech-bubble.show').forEach(el => el.classList.remove('show'));
             modal.classList.add('show');
             showModalSlide(currentModalSlide);
             document.body.style.overflow = 'hidden';
@@ -763,10 +768,13 @@
 
         function showModalSlide(index) {
             modalSlides.forEach(slide => slide.classList.remove('active'));
-            modalSlides[index].classList.add('active');
+            if (modalSlides[index]) {
+                modalSlides[index].classList.add('active');
+            }
             sliderIndicator.innerText = `${index + 1} / ${modalSlides.length}`;
         }
 
+        // 點擊半透明遮罩背景時關閉
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 closeModal();
