@@ -22,6 +22,10 @@
             font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--dark-color);
@@ -65,6 +69,7 @@
             transition: all 0.2s ease;
             display: inline-block;
             margin: 10px;
+            text-decoration: none;
         }
         
         .btn:hover {
@@ -196,84 +201,57 @@
             z-index: 1;
         }
 
-        /* 嵌入式版型展示區塊 (Inline Viewer) */
-        .inline-box-viewer {
-            display: none;
-            width: 100%;
-            max-width: 700px;
-            margin: 25px auto 0 auto;
-            background: var(--bg-color);
-            border: 2px solid var(--dark-color);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 4px 4px 0px var(--dark-color);
-            animation: fadeIn 0.4s ease-in-out;
-            position: relative;
-        }
-
-        .inline-box-viewer.show {
-            display: block;
-        }
-
-        .viewer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-weight: 900;
-            font-size: 1.1rem;
-        }
-
-        .viewer-close-btn {
+        /* ==========================================================================
+           Part: 經典版型庫常駐展示區塊 (Gallery Section) 
+           ========================================================================== */
+        .gallery-container {
             background: var(--white);
             border: 2px solid var(--dark-color);
-            border-radius: 6px;
-            padding: 2px 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .viewer-close-btn:hover {
-            background: #ff7675;
-            color: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 8px 8px 0px var(--dark-color);
+            text-align: center;
         }
 
-        .slider-container {
+        .gallery-slider {
             position: relative;
             width: 100%;
+            max-width: 750px;
+            margin: 20px auto;
+            border: 2px solid var(--dark-color);
+            border-radius: 12px;
+            background-color: var(--bg-color);
+            aspect-ratio: 4/3;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            border-radius: 8px;
-            background-color: var(--white);
-            border: 2px solid var(--dark-color);
-            aspect-ratio: 4/3; 
+            box-shadow: 4px 4px 0px var(--dark-color);
         }
 
-        .slider-img {
+        .gallery-img {
             display: none;
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        .slider-img.active {
+        .gallery-img.active {
             display: block;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        .slider-arrow {
+        .gallery-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             background-color: var(--white);
             border: 2px solid var(--dark-color);
             color: var(--dark-color);
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 2px 2px 0px var(--dark-color);
@@ -283,19 +261,22 @@
             z-index: 5;
         }
 
-        .slider-arrow:hover {
+        .gallery-arrow:hover {
             background-color: var(--primary-color);
         }
 
-        .slider-arrow.prev { left: 10px; }
-        .slider-arrow.next { right: 10px; }
+        .gallery-arrow.prev { left: 15px; }
+        .gallery-arrow.next { right: 15px; }
 
-        .slider-indicator {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
+        .gallery-indicator {
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin: 15px 0;
             color: var(--dark-color);
+        }
+
+        .gallery-nav-buttons {
+            margin-top: 20px;
         }
 
         /* ==========================================================================
@@ -407,6 +388,9 @@
 </head>
 <body>
 
+    <!-- ==========================================================================
+         Part 1: 流程指引
+         ========================================================================== -->
     <section id="part1">
         <h2 class="section-title">打樣流程指引</h2>
         <div class="carousel-container">
@@ -433,8 +417,7 @@
                 <h2>STEP.2 結構設計</h2>
                 <div class="btn-group">
                     <div class="action-wrapper">
-                        <!-- 點擊直接在下方展開/關閉版型庫 -->
-                        <button class="btn btn-outline" onclick="toggleInlineViewer()">使用現有版型庫 ▼</button>
+                        <button class="btn btn-outline" onclick="scrollToSection('box-gallery')">使用現有版型庫 ↓</button>
                     </div>
                     <div class="action-wrapper">
                         <button class="btn btn-outline" onclick="toggleBubble(this)">客製化結構開發</button>
@@ -444,28 +427,6 @@
                         <button class="btn" onclick="toggleBubble(this)">自備圖檔(已設計)</button>
                         <div class="speech-bubble">請提供 illustrator 或 svg 檔案為主。</div>
                     </div>
-                </div>
-
-                <!-- 直接嵌入在 STEP.2 卡片下方的版型輪播區塊 -->
-                <div id="inlineBoxViewer" class="inline-box-viewer">
-                    <div class="viewer-header">
-                        <span>📦 經典版型庫預覽 (共 8 款)</span>
-                        <button class="viewer-close-btn" onclick="toggleInlineViewer(false)">✕ 關閉預覽</button>
-                    </div>
-                    <div class="slider-container">
-                        <img class="slider-img active" src="./images/盒型說明-1_2.jpg" alt="款式A 基礎方盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-2_2.jpg" alt="款式B 飛機盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-3_2.jpg" alt="款式C 禮物盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-4_2.jpg" alt="款式D 天地蓋盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-5_2.jpg" alt="款式E 抽屜盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-6_2.jpg" alt="款式F 三角造型盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-7_2.jpg" alt="款式G 提盒" loading="lazy">
-                        <img class="slider-img" src="./images/盒型說明-8_2.jpg" alt="款式G 精緻硬盒" loading="lazy">
-                        
-                        <button class="slider-arrow prev" onclick="changeViewerSlide(-1)">&#10094;</button>
-                        <button class="slider-arrow next" onclick="changeViewerSlide(1)">&#10095;</button>
-                    </div>
-                    <div class="slider-indicator" id="viewerIndicator">1 / 8</div>
                 </div>
             </div>
 
@@ -526,6 +487,37 @@
         </div>
     </section>
 
+    <!-- ==========================================================================
+         Part: 8款經典版型庫常駐區塊
+         ========================================================================== -->
+    <section id="box-gallery">
+        <h2 class="section-title">📦 8款經典盒型庫</h2>
+        <div class="gallery-container">
+            <div class="gallery-slider">
+                <img class="gallery-img active" src="./images/1.jpg" alt="款式1 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/2.jpg" alt="款式2 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/3.jpg" alt="款式3 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/4.jpg" alt="款式4 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/5.jpg" alt="款式5 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/6.jpg" alt="款式6 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/7.jpg" alt="款式7 盒型說明" loading="lazy">
+                <img class="gallery-img" src="./images/8.jpg" alt="款式8 盒型說明" loading="lazy">
+                
+                <button class="gallery-arrow prev" onclick="changeGallerySlide(-1)">&#10094;</button>
+                <button class="gallery-arrow next" onclick="changeGallerySlide(1)">&#10095;</button>
+            </div>
+            <div class="gallery-indicator" id="galleryIndicator">1 / 8</div>
+            
+            <div class="gallery-nav-buttons">
+                <button class="btn btn-outline" onclick="scrollToSection('part1')">↑ 返回流程指引</button>
+                <button class="btn" onclick="scrollToSection('part2')">繼續產品評估 ↓</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         Part 2: 產品評估問答
+         ========================================================================== -->
     <section id="part2">
         <h2 class="section-title">現有產品指引評估</h2>
         <div class="wizard-container">
@@ -555,7 +547,7 @@
             <div class="wizard-step" id="wiz-step-4">
                 <div class="wizard-question" style="color: var(--primary-color); font-weight: 900; -webkit-text-stroke: 1px var(--dark-color);">評估完成！</div>
                 <p style="font-size: 1.1rem; margin-bottom: 20px;">請參考下方費用估算進行精確報價！</p>
-                <button class="btn" onclick="document.getElementById('part3').scrollIntoView({behavior: 'smooth'})">前往計算器</button>
+                <button class="btn" onclick="scrollToSection('part3')">前往計算器</button>
             </div>
         </div>
     </section>
@@ -668,40 +660,26 @@
             }
         });
 
-        // ---------------- STEP.2 嵌入式版型輪播 (Inline Viewer) ----------------
-        let currentViewerSlide = 0;
-        const viewerSlides = document.querySelectorAll('#inlineBoxViewer .slider-img');
-        const viewerIndicator = document.getElementById('viewerIndicator');
-        const inlineBoxViewer = document.getElementById('inlineBoxViewer');
-
-        function toggleInlineViewer(forceState) {
-            if (typeof forceState === 'boolean') {
-                if (forceState) {
-                    inlineBoxViewer.classList.add('show');
-                } else {
-                    inlineBoxViewer.classList.remove('show');
-                }
-            } else {
-                inlineBoxViewer.classList.toggle('show');
-            }
-            if (inlineBoxViewer.classList.contains('show')) {
-                showViewerSlide(currentViewerSlide);
+        // ---------------- 平滑滑動函式 ----------------
+        function scrollToSection(sectionId) {
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
             }
         }
 
-        function changeViewerSlide(direction) {
-            currentViewerSlide += direction;
-            if (currentViewerSlide < 0) currentViewerSlide = viewerSlides.length - 1;
-            if (currentViewerSlide >= viewerSlides.length) currentViewerSlide = 0;
-            showViewerSlide(currentViewerSlide);
-        }
+        // ---------------- 盒型庫輪播邏輯 ----------------
+        let currentGallerySlide = 0;
+        const gallerySlides = document.querySelectorAll('.gallery-img');
+        const galleryIndicator = document.getElementById('galleryIndicator');
 
-        function showViewerSlide(index) {
-            viewerSlides.forEach(slide => slide.classList.remove('active'));
-            if (viewerSlides[index]) {
-                viewerSlides[index].classList.add('active');
-            }
-            viewerIndicator.innerText = `${index + 1} / ${viewerSlides.length}`;
+        function changeGallerySlide(direction) {
+            gallerySlides[currentGallerySlide].classList.remove('active');
+            currentGallerySlide += direction;
+            if (currentGallerySlide < 0) currentGallerySlide = gallerySlides.length - 1;
+            if (currentGallerySlide >= gallerySlides.length) currentGallerySlide = 0;
+            gallerySlides[currentGallerySlide].classList.add('active');
+            galleryIndicator.innerText = `${currentGallerySlide + 1} / ${gallerySlides.length}`;
         }
 
         // ---------------- Part 2: Wizard ----------------
